@@ -54,8 +54,6 @@ class RegisterController extends Controller
                 $auth->assign($editor, $user->getId());
                 return $this->goHome();
             }
-
-
         }
     }
 

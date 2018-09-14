@@ -14,6 +14,8 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return static::findOne($id);
     }
 
+
+
     /**
      * {@inheritdoc}
      */

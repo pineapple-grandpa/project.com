@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $form->field($model, 'email') ?>
     <?= $form->field($model,'password')->passwordInput() ?>
     <?= $form->field($model,'confirm_password')->passwordInput() ?>
-    <?php $items = ['1'=>'male','2'=>'female'];
+    <?php $items = ['male'=>'male','female'=>'female'];
     echo $form->field($model,'gender')->dropDownList($items) ?>
     <?= $form->field($model, 'birth_date')->widget(
         DatePicker::className(),[

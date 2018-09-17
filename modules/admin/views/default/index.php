@@ -2,7 +2,7 @@
 
 
 <ul>
-    <li><a href="/admin/users">Пользователи</a> </li>
+    <li><a href="/admin/users">Users</a> </li>
 </ul>
 
 </div>

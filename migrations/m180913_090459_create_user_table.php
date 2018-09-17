@@ -18,7 +18,7 @@ class m180913_090459_create_user_table extends Migration
             'login' => $this->string()->notNull(),
             'password' => $this->string()->notNull(),
             'birth_date' => $this->date(),
-            'gender' => $this->integer(1)->defaultValue(0),
+            'gender' => $this->string(),
             'role' => $this->string()->notNull()->defaultValue('user')
         ]);
     }

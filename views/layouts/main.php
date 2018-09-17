@@ -1,6 +1,7 @@
 <?php
 
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
 use app\widgets\Alert;
@@ -9,6 +10,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
+use app\models\user;
 
 AppAsset::register($this);
 ?>
@@ -35,14 +37,17 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
+            Yii::$app->user->isGuest ? ('') : (
+            ['label' => 'Profile', 'url' => ['/user']]
+            ),
+
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/login/form']]
+            ['label' => 'Login', 'url' => ['/login']]
             ) : (
                 '<li>'
                 . Html::beginForm(['/login/logout'], 'post')
@@ -55,7 +60,11 @@ AppAsset::register($this);
             ),
             Yii::$app->user->isGuest ? (
             ['label' => 'Register', 'url' => ['/register/form']]
+            ) : (
+            Yii::$app->user->identity->isAdmin() ? (
+            ['label' => 'Admin panel', 'url' => ['/admin']]
             ) : ('')
+            )
         ],
     ]);
     NavBar::end();

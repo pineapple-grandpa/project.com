@@ -6,18 +6,12 @@
  * Time: 12:15
  */
 
-namespace app\models;
+namespace app\modules\admin\models;
 
-use Yii;
+use app\models\User;
 use yii\base\Model;
 
-/**
- * LoginForm is the model behind the login form.
- *
- * @property User|null $user This property is read-only.
- *
- */
-class RegisterForm extends Model
+class CreateForm extends Model
 {
     public $login;
     public $email;
@@ -26,20 +20,24 @@ class RegisterForm extends Model
     public $name;
     public $birth_date;
     public $gender;
+    public $role;
 
     /**
      * @return array the validation rules.
      */
-    public function rules() {
+    public function rules()
+    {
         return [
-            [['login','password','confirm_password'],'required','message' => 'fill in the fields!'],
-            ['login', 'unique', 'targetClass' => User::className(),  'message' => 'This login already in use!'],
-            ['password','validatePassword'],
-            ['email','email'],
-            ['name','string'],
-            ['gender','string'],
-            ['gender','validateGender'],
-            ['birth_date','string'],
+            [['login', 'password', 'confirm_password'], 'required', 'message' => 'fill in the fields!'],
+            ['login', 'unique', 'targetClass' => User::className(), 'message' => 'This login already in use!'],
+            ['password', 'validatePassword'],
+            ['email', 'email'],
+            ['name', 'string'],
+            ['gender', 'string'],
+            ['gender', 'validateGender'],
+            ['birth_date', 'string'],
+            ['role', 'string'],
+            ['role','validateRole']
         ];
     }
 
@@ -56,6 +54,7 @@ class RegisterForm extends Model
             'name' => 'Name',
             'gender' => 'Gender',
             'birth_date' => 'Birth date',
+            'role' => 'Role'
         ];
     }
 
@@ -74,8 +73,26 @@ class RegisterForm extends Model
 
     public function validateGender($attribute, $params)
     {
-        if ($this->gender !== 'male' && $this->gender !== 'female') {
+        $genders = [
+            'male',
+            'female'
+        ];
+
+        if (!in_array($this->gender,$genders)) {
             $this->addError($attribute, "The gender can be 'male' or 'female' !");
+        }
+    }
+
+    public function validateRole($attribute, $params)
+    {
+        $roles = [
+            'user',
+            'moder',
+            'admin'
+        ];
+
+        if (!in_array($this->role,$roles)) {
+            $this->addError($attribute, "The role can be only 'user','moder' or 'admin'!");
         }
     }
 }

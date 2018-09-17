@@ -50,8 +50,8 @@ class RegisterController extends Controller
             $user->gender = $model->gender;
             if ($user->save()){
                 $auth = Yii::$app->authManager;
-                $editor = $auth->getRole('user');
-                $auth->assign($editor, $user->getId());
+                $role = $auth->getRole('user');
+                $auth->assign($role, $user->getId());
                 return $this->goHome();
             }
         }

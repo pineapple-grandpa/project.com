@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 
 class User extends ActiveRecord implements \yii\web\IdentityInterface
@@ -14,6 +15,19 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return static::findOne($id);
     }
 
+    public function isAdmin()
+    {
+        $roles = \Yii::$app->authManager->getRolesByUser($this->getId());
+        return array_key_exists('admin', $roles);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsGuest()
+    {
+        return !!Yii::$app->user->identity;
+    }
 
 
     /**

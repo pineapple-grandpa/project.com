@@ -2,6 +2,7 @@
 
 namespace app\modules\user\controllers;
 
+use app\models\User;
 use app\modules\user\models\SettingsForm;
 use Yii;
 use yii\filters\AccessControl;
@@ -20,7 +21,7 @@ class DefaultController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index'],
+                        'actions' => ['index','all'],
                         'allow' => true,
                         'roles' => ['user'],
                     ],
@@ -35,7 +36,13 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        $user = \Yii::$app->user->identity;
+        $user = Yii::$app->user->identity;
         return $this->render('index', ['user' => $user]);
+    }
+
+    public function actionAll()
+    {
+        $users = User::find()->all();
+        return $this->render('all',['users' => $users]);
     }
 }

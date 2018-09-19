@@ -30,16 +30,6 @@ class DefaultController extends Controller
         ];
     }
 
-    /**
-     * Renders the index view for the module
-     * @return string
-     */
-    public function actionIndex()
-    {
-        $user = Yii::$app->user->identity;
-        return $this->render('index', ['user' => $user]);
-    }
-
     public function actionAll()
     {
         $users = User::find()->all();

@@ -18,6 +18,9 @@ class SettingsForm extends Model
     public $birth_date;
     public $gender;
 
+    public $option_id;
+    public $option_value;
+
     /**
      * @return array the validation rules.
      */
@@ -29,6 +32,8 @@ class SettingsForm extends Model
             ['gender', 'string'],
             ['gender', 'validateGender'],
             ['birth_date', 'string'],
+            ['option_id', 'integer'],
+            ['option_value', 'integer'],
         ];
     }
 

@@ -23,7 +23,7 @@ $this->title = 'Settings';
     ],
 ]) ?>
 
-    <div class="site-login">
+    <div>
         <h1><?= Html::encode($this->title) ?></h1>
 
         <?= $form->field($model, 'name')->textInput(['value' => $user->name]) ?>
@@ -41,8 +41,17 @@ $this->title = 'Settings';
             ]
         ]); ?>
 
+        <h3>Options</h3>
+
+        <?php $list = ['0' => 'disabled', '1' => 'enabled'];
+        $option = $user->getOption('access_to_guests_to_write_on_wall');
+        echo $form->field($model, 'option_value')->dropDownList($list, ['value' => $option->value])->label('Access to wall ') ?>
+
+        <?= $form->field($model, 'option_id')->hiddenInput(['value' => $option->id])->label(false) ?>
+
+
         <div class="col-lg-offset-1 col-lg-11">
-            <a class="btn btn-success" href="/user">Back</a>
+            <a class="btn btn-success" href="/user/profile?id=<?= Yii::$app->user->getId() ?>">Back</a>
             <?= Html::submitButton('Save changes', ['class' => 'btn btn-success']) ?>
         </div>
     </div>

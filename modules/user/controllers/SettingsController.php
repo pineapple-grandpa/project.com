@@ -9,8 +9,10 @@
 namespace app\modules\user\controllers;
 
 
+use app\models\User;
 use app\modules\user\models\SettingsForm;
 use app\modules\user\models\UploadForm;
+use app\modules\user\models\UserSettings;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -36,8 +38,9 @@ class SettingsController extends Controller
 
     public function actionIndex()
     {
-        $user = \Yii::$app->user->identity;
+        $user = User::findOne(\Yii::$app->user->getId());
         $model = new SettingsForm();
+        $settings = $user->settings;
 
         if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
             $user->name = $model->name;
@@ -45,13 +48,16 @@ class SettingsController extends Controller
             $user->gender = $model->gender;
             $user->birth_date = $model->birth_date;
 
-            if ($user->save()) {
+            $option = UserSettings::findOne($model->option_id);
+            $option->value = $model->option_value;
+
+            if ($user->save() && $option->save()) {
                 Yii::$app->session->setFlash('success', "Profile updated successfully!");
-                return $this->redirect('/user');
+                return $this->redirect('/user/profile?id=' . $user->getId());
             }
         }
 
-        return $this->render('index', ['user' => $user, 'model' => $model]);
+        return $this->render('index', ['user' => $user, 'model' => $model,'settings' => $settings]);
     }
 
     public function actionAvatar()

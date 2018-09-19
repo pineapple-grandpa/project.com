@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "10cf56d9366fbd6e65812b2061676378",
+    "content-hash": "562f31a167c19a77c234885dd5c500dc",
     "packages": [
         {
             "name": "2amigos/yii2-date-picker-widget",
@@ -455,6 +455,53 @@
                 "yii2"
             ],
             "time": "2018-08-29T11:42:11+00:00"
+        },
+        {
+            "name": "ogheo/yii2-comments",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ogheo/yii2-comments.git",
+                "reference": "2b5496af2771cfac7a8ca70ad6f44ede4231de19"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ogheo/yii2-comments/zipball/2b5496af2771cfac7a8ca70ad6f44ede4231de19",
+                "reference": "2b5496af2771cfac7a8ca70ad6f44ede4231de19",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*",
+                "yiisoft/yii2-bootstrap": "*"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "bootstrap": "ogheo\\comments\\Bootstrap"
+            },
+            "autoload": {
+                "psr-4": {
+                    "ogheo\\comments\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Oleg Gheorghita",
+                    "email": "oleg.gheo@gmail.com"
+                }
+            ],
+            "description": "Comments module for Yii2",
+            "homepage": "https://bitbucket.org/ogheo/yii2-comments",
+            "keywords": [
+                "yii2",
+                "yii2-comments",
+                "yii2-comments-manager",
+                "yii2-comments-module"
+            ],
+            "time": "2017-09-06T21:20:01+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

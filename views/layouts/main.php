@@ -43,7 +43,7 @@ AppAsset::register($this);
         'items' => [
             ['label' => 'Home', 'url' => ['/site/index']],
             Yii::$app->user->isGuest ? ('') : (
-            ['label' => 'Profile', 'url' => ['/user/profile?id=' . Yii::$app->user->getId()]]
+            ['label' => 'Profile', 'url' => ['/user/profile?id=' . Yii::$app->user->getId() . '&lim=10']]
             ),
 
             Yii::$app->user->isGuest ? (
@@ -52,7 +52,7 @@ AppAsset::register($this);
                 '<li>'
                 . Html::beginForm(['/login/logout'], 'post')
                 . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->login . ')',
+                    'Logout (' . Yii::$app->user->identity->name . ')',
                     ['class' => 'btn btn-link logout']
                 )
                 . Html::endForm()

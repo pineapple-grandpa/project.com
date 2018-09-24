@@ -24,4 +24,18 @@ class CommentController extends Controller
         return false;
     }
 
+    public function actionSave()
+    {
+        $request = \Yii::$app->getRequest();
+
+        if ($request->bodyParams['CommentForm']['comment_id'] && $request->bodyParams['CommentForm']['message']) {
+//            var_dump($request->bodyParams);
+            $comment = Comment::findOne($request->bodyParams['CommentForm']['comment_id']);
+            $comment->message = $request->bodyParams['CommentForm']['message'];
+            return $comment->save();
+        }
+
+        return false;
+    }
+
 }

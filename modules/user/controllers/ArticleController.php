@@ -31,15 +31,14 @@ class ArticleController extends Controller
     public function actionSave()
     {
         $request = \Yii::$app->getRequest();
-        $article = Article::findOne($request->bodyParams['ArticleForm']['article_id']);
-        $article->message = $request->bodyParams['ArticleForm']['message'];
-        return $article->save();
 
-//        if ($request->isPost && $model->load($request->post())) {
-//            \Yii::$app->response->format = Response::FORMAT_JSON;
-//            return ['success' => $model->save()];
+        if ($request->bodyParams['ArticleForm']['article_id'] && $request->bodyParams['ArticleForm']['message']) {
+            $article = Article::findOne($request->bodyParams['ArticleForm']['article_id']);
+            $article->message = $request->bodyParams['ArticleForm']['message'];
+            return $article->save();
+        }
 
-
+        return false;
     }
 
     public function actionValidate()

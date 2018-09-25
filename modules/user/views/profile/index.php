@@ -1,27 +1,31 @@
 <?php
 
+use app\assets\ProfileAsset;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
+ProfileAsset::register($this);
 $guest = Yii::$app->user->identity;
 $isOwner = ($user->getId() === $guest->getId());
 ?>
 
-<div class="container" style="display: flex; ">
-    <div style="text-align: center; width: 300px;">
-        <text><b><?= $user->role; ?></b></text>
-        <br>
-        <div style="margin-bottom: 15px">
-            <img style="height: 200px; width: 200px; border-radius: 50%" src="/img/avatars/<?= $user->avatar ?>"><br>
 
+<body>
+<div class="container main-content">
+    <div class="user-description">
+
+        <p><?= $user->role; ?></p>
+
+        <div class="user-avatar">
+            <img src="/img/avatars/<?= $user->avatar ?>"><br>
             <?php if ($isOwner) : ?>
-                <div style="margin-bottom: 15px; margin-top: 10px;">
+                <div class="user-avatar-settings">
                     <a class="btn btn-default" href="/user/settings/avatar">Change avatar</a>
                 </div>
             <?php endif; ?>
         </div>
 
-        <div style=" display: flex; justify-content: center; margin-bottom: 15px">
+        <div class="user-data">
             <table>
                 <tr>
                     <td><b>Name:</b></td>
@@ -52,57 +56,87 @@ $isOwner = ($user->getId() === $guest->getId());
                 <a href="" class="btn btn-success">Send invite</a><br>
             </div>
         <?php endif; ?>
-
     </div>
-    <br>
 
 
-    <div id="wall" style="max-width: 700px">
-        <?php if($user->isOption('access_to_guests_to_write_on_wall') || (!$user->isOption('access_to_guests_to_write_on_wall') && $isOwner)) : ?>
-        <div style="width: 700px;">
-            <?php $form = ActiveForm::begin() ?>
+    <div class="user-wall">
+        <?php if ($user->isOption('access_to_guests_to_write_on_wall') || (!$user->isOption('access_to_guests_to_write_on_wall') && $isOwner)) : ?>
 
-            <div>
-                <?= $form->field($model, 'message')->textInput()->label(false); ?>
-                <?= $form->field($model, 'author_id')->hiddenInput(['value' => $guest->getId()])->label(false) ?>
-                <?= $form->field($model, 'author_name')->hiddenInput(['value' => $guest->name])->label(false) ?>
-                <?= $form->field($model, 'author_avatar')->hiddenInput(['value' => $guest->avatar])->label(false) ?>
+            <div class="input-new-article-form">
+                <?php $form = ActiveForm::begin() ?>
 
-                <div class="text-right">
-                    <?= Html::submitButton('Send', ['class' => 'btn btn-success']) ?>
+                <div>
+                    <?= $form->field($model, 'message')->textInput()->label(false); ?>
+                    <?= $form->field($model, 'author_id')->hiddenInput(['value' => $guest->getId()])->label(false) ?>
+                    <?= $form->field($model, 'author_name')->hiddenInput(['value' => $guest->name])->label(false) ?>
+                    <?= $form->field($model, 'author_avatar')->hiddenInput(['value' => $guest->avatar])->label(false) ?>
+
+                    <div class="text-right">
+                        <?= Html::submitButton('Send', ['class' => 'btn btn-success']) ?>
+                    </div>
+
                 </div>
 
+                <?php ActiveForm::end() ?>
             </div>
 
-            <?php ActiveForm::end() ?>
-        </div>
-        <br>
         <?php endif; ?>
 
-        <div style="display: flex; flex-wrap: wrap; justify-content: flex-end;">
+        <?php \yii\widgets\Pjax::begin() ?>
+
+        <div class="wall-article-block">
+            <?php $count = 0; ?>
             <?php foreach ($articles as $article) : ?>
-                <div style="border: 1px solid gainsboro; display: flex; margin-bottom: 5px; margin-top: 20px; padding: 5px; width: 700px;">
-                    <div style="text-align: center; border-right: 1px solid gainsboro; padding-right: 5px; ">
-                        <a href="/user/profile?id=<?= $article->author_id ?>"> <img
+                <?php $count++; ?>
+
+                <div class="wall-article-description">
+
+                    <div class="wall-article-author">
+                        <a href="/user/profile?id=<?= $article->author_id ?>&lim=10"> <img
                                     style="width: 50px; height: 50px; border-radius: 50%;"
-                                    src="/img/avatars/<?= $article->author_avatar ?>"></a> <br>
-                        <text><?= $article->author_name ?></text>
-                        <br>
-                        <text><?= $article->created_at ?></text>
+                                    src="/img/avatars/<?= $article->author_avatar ?>"></a>
+                        <p><?= $article->author_name ?></p>
+                        <p><?= $article->created_at ?></p>
                     </div>
-                    <div style="display: flex; width: 600px; justify-content: space-between;">
-                        <div style="align-self: center;padding-left: 5px;">
-                            <text><?= $article->message ?></text>
+
+                    <div class="wall-article-content">
+
+                        <div class="wall-article-content-message">
+                            <p><?= $article->message ?></p>
                         </div>
-                        <?php if($user->isOption('access_to_guests_to_write_on_wall') || (!$user->isOption('access_to_guests_to_write_on_wall') && $isOwner)) : ?>
-                        <div style=" align-self: flex-end;">
-                            <button onclick="toggle_visibility(<?= $article->id ?>);" class="btn btn-default">reply
-                            </button>
+
+                        <div class="wall-article-content-buttons" style="">
+                            <?php if ($isOwner || $article->author_id == $guest->id || $guest->isAdmin()) : ?>
+                                <div>
+                                    <button onclick="remove_articles_comments(<?= $article->id ?>,'article')"
+                                            class="btn btn-default">delete
+                                    </button>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if ($user->isOption('access_to_guests_to_write_on_wall') || (!$user->isOption('access_to_guests_to_write_on_wall') && $isOwner)) : ?>
+                                <div>
+                                    <button onclick="input_text_visibility(<?= $article->id ?>);"
+                                            class="btn btn-default">
+                                        reply
+                                    </button>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($article->author_id == $guest->id || $guest->isAdmin()) : ?>
+                                <div>
+                                    <button onclick="edit_text_visibility(<?= $article->id ?>)"
+                                            class="btn btn-default">
+                                        edit
+                                    </button>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                        <?php endif; ?>
+
+
                     </div>
-                </div><br>
-                <div style="width: 700px; margin-bottom: 10px; display: none;" id="<?= $article->id ?>">
+                </div>
+
+                <div class="input-comment-form" data-name="input_comment_form" id="<?= $article->id ?>">
                     <?php $form = ActiveForm::begin() ?>
 
                     <div>
@@ -119,37 +153,109 @@ $isOwner = ($user->getId() === $guest->getId());
                     </div>
 
                     <?php ActiveForm::end() ?>
-                </div><br>
-                <?php foreach ($article->comments as $comment) : ?>
-                    <div style="border: 1px solid gainsboro; display: flex; margin-bottom: 5px; padding: 5px; width: 560px;">
-                        <div style="text-align: center; border-right: 1px solid gainsboro; padding-right: 5px">
-                            <a href="/user/profile?id=<?= $comment->author_id ?>"> <img
-                                        style="width: 50px; height: 50px; border-radius: 50%;"
-                                        src="/img/avatars/<?= $comment->author_avatar ?>"></a> <br>
-                            <text><?= $comment->author_name ?></text>
-                            <br>
-                            <text><?= $comment->created_at ?></text>
+                </div>
+
+                <div class="edit-article-form" id="edit_article_id_<?= $article->id ?>">
+                    <?php $form = ActiveForm::begin([
+                        'id' => 'edit_article_form_' . $article->id,
+                        'method' => 'POST',
+                        'action' => '/user/article/save',
+                        'enableAjaxValidation' => false,
+                    ]) ?>
+
+                    <div>
+                        <?= $form->field($model, 'message')->textInput(['value' => $article->message])->label(false); ?>
+                        <?= $form->field($model, 'article_id')->hiddenInput(['value' => $article->id])->label(false) ?>
+
+                        <div id="edit_article_save" class="text-right">
+                            <?= Html::submitButton('Save', ['class' => 'btn btn-success', 'onclick' => 'on_click_save_button_edit_form(' . $article->id . ')',]) ?>
                         </div>
-                        <div style="align-self: center;padding-left: 5px">
-                            <text><?= $comment->message ?></text>
-                        </div>
+
                     </div>
+
+                    <?php ActiveForm::end() ?>
+                </div>
+
+                <?php foreach ($article->comments as $comment) : ?>
+                    <div class="wall-article-comment">
+
+                        <div class="wall-article-comment-author">
+                            <a href="/user/profile?id=<?= $comment->author_id ?>">
+                                <img src="/img/avatars/<?= $comment->author_avatar ?>"></a> <br>
+                            <p><?= $comment->author_name ?></p>
+                            <p><?= $comment->created_at ?></p>
+                        </div>
+
+                        <div class="wall-article-comment-content">
+
+                            <div class="wall-article-comment-content-message">
+                                <p><?= $comment->message ?></p>
+                            </div>
+
+                            <div class="wall-article-comment-content-buttons">
+                                <?php if ($isOwner || $comment->author_id == $guest->id || $guest->isAdmin()) : ?>
+                                    <div>
+                                        <button onclick="remove_articles_comments(<?= $comment->id ?>,'comment')"
+                                                class="btn btn-default">
+                                            delete
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
+                                <?php if ($comment->author_id == $guest->id || $guest->isAdmin()) : ?>
+                                    <div>
+                                        <button onclick="edit_comment_text_visibility(<?= $comment->id ?>)"
+                                                class="btn btn-default">
+                                            edit
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="edit-comment-form" id="edit_comment_id_<?= $comment->id ?>">
+                        <?php $form = ActiveForm::begin([
+                            'id' => 'edit_comment_form_' . $comment->id,
+                            'method' => 'POST',
+                            'action' => '/user/comment/save',
+                            'enableAjaxValidation' => false,
+                        ]) ?>
+
+                        <div>
+                            <?= $form->field($model2, 'message')->textInput(['value' => $comment->message])->label(false); ?>
+                            <?= $form->field($model2, 'comment_id')->hiddenInput(['value' => $comment->id])->label(false) ?>
+
+                            <div id="edit_comment_save" class="text-right">
+                                <?= Html::submitButton('Save', ['class' => 'btn btn-success', 'onclick' => 'on_click_save_button_edit_comment_form(' . $comment->id . ')']) ?>
+                            </div>
+
+                        </div>
+
+                        <?php ActiveForm::end() ?>
+                    </div>
+
                 <?php endforeach; ?>
             <?php endforeach; ?>
         </div>
+
+        <?php $count += 5; ?>
+        <?= Html::a(
+            'Обновить',
+            ['/user/profile?id=' . $user->id . '&lim=' . $count],
+            ['class' => 'btn btn-lg btn-primary', 'id' => 'scroll', 'style' => 'display:none;']
+        ) ?>
+        <?php \yii\widgets\Pjax::end() ?>
 
     </div>
 
 </div>
 
-<script type="text/javascript">
-    function toggle_visibility(id) {
-        var e = document.getElementById(id);
-        if (e.style.display == 'block')
-            e.style.display = 'none';
-        else
-            e.style.display = 'block';
-    }
-</script>
+</body>
+
+
+
+
 
 

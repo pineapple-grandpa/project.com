@@ -2,11 +2,45 @@
 
 namespace app\models;
 
+use app\modules\user\models\UserSettings;
+use phpDocumentor\Reflection\Types\Boolean;
 use Yii;
 use yii\db\ActiveRecord;
 
 class User extends ActiveRecord implements \yii\web\IdentityInterface
 {
+    public function getSettings() //получаю массив настроек
+    {
+        return $this->hasMany(UserSettings::className(), ['user_id' => 'id']);
+    }
+
+    public function getOption($optionName) // получаю определенную настройку по имени
+    {
+        $options = $this->settings;
+
+        $opt = 0;
+        foreach ($options as $option) {
+            if ($option->name == $optionName) {
+                $opt = $option;
+                break;
+            }
+
+        }
+
+        if ($opt) {
+            return $opt;
+        }
+
+        return false;
+    }
+
+    public function isOption($optionName) // проверяю true или false настройка
+    {
+        $option = $this->getOption($optionName);
+        return $option->value ? true : false;
+    }
+
+
     /**
      * {@inheritdoc}
      */
@@ -52,7 +86,7 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['login'=>$username]);
+        return static::findOne(['login' => $username]);
     }
 
     /**
@@ -87,6 +121,6 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
      */
     public function validatePassword($password)
     {
-        return \Yii::$app->security->validatePassword($password,$this->password);
+        return \Yii::$app->security->validatePassword($password, $this->password);
     }
 }

@@ -37,10 +37,11 @@ class ProfileController extends Controller
     }
 
 
-    public function actionIndex($id)
+    public function actionIndex($id,$lim)
     {
         $user = User::findIdentity($id);
-        $articles = Article::find()->where(['user_id' => $id])->orderBy(['created_at' => SORT_DESC])->all();
+
+        $articles = Article::find()->where(['user_id' => $id])->orderBy(['id' => SORT_DESC])->limit($lim)->all();
 
         $model = new ArticleForm();
         if($model->load(\Yii::$app->request->post()) && $model->validate()){
@@ -51,7 +52,7 @@ class ProfileController extends Controller
             $article->author_avatar = $model->author_avatar;
             $article->message = $model->message;
             if ($article->save()){
-                return $this->redirect('/user/profile?id=' . $id);
+                return $this->redirect('/user/profile?id=' . $id . '&lim=' . $lim);
             }
         }
 
@@ -64,7 +65,7 @@ class ProfileController extends Controller
             $comment->author_avatar = $model2->author_avatar;
             $comment->message = $model2->message;
             if ($comment->save()){
-                return $this->redirect('/user/profile?id=' . $id);
+                return $this->redirect('/user/profile?id=' . $id . '&lim=' . $lim);
             }
         }
 

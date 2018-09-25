@@ -18,7 +18,7 @@
         <label for="birth_date">Birth date:</label>
         <text id="birth_date"><?= $user->birth_date ?></text><br>
 
-        <a href="/user/profile?id=<?= $user->id ?>" class="btn btn-success">Go to profile</a><br>
+        <a href="/user/profile?id=<?= $user->id ?>&lim=10" class="btn btn-success">Go to profile</a><br>
         <a href="" class="btn btn-success">Send message</a><br>
         <a href="" class="btn btn-success">Send invite</a><br>
 

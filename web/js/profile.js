@@ -82,7 +82,7 @@ function remove_articles_comments(id,type) {
     if (type == 'article') {
         if (confirm('do you really want to remove this article?')) {
             $.ajax({
-                type: 'DELETE',
+                type: 'GET',
                 url: '/user/article/delete?id=' + id,
                 complete: function () {
                     location.reload();
@@ -93,7 +93,7 @@ function remove_articles_comments(id,type) {
     } else if (type == 'comment') {
         if (confirm('do you really want to remove this comment?')) {
             $.ajax({
-                type: 'DELETE',
+                type: 'GET',
                 url: '/user/comment/delete?id=' + id,
                 complete: function () {
                     location.reload();

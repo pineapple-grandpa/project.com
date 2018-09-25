@@ -8,7 +8,6 @@
 
 namespace app\modules\user\models;
 
-use Yii;
 use yii\base\Model;
 use yii\web\UploadedFile;
 

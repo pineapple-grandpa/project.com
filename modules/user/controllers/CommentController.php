@@ -8,34 +8,50 @@
 
 namespace app\modules\user\controllers;
 
-
-use app\models\Comment;
+use app\modules\user\Module;
+use app\modules\user\services\CommentService;
 use yii\web\Controller;
 
 class CommentController extends Controller
 {
-    public function actionDelete($id)
-    {
-        $article = Comment::findOne($id);
+    /**
+     * @var CommentService
+     */
+    private $commentService;
 
-        if ($article->delete()) {
-            return true;
-        }
-        return false;
+    /**
+     * CommentController constructor.
+     * @param $id
+     * @param Module $module
+     * @param CommentService $commentService
+     * @param array $config
+     */
+    public function __construct(
+        $id,
+        Module $module,
+        CommentService $commentService,
+        array $config = [])
+    {
+        parent::__construct($id, $module, $config);
+
+        $this->commentService = $commentService;
     }
 
+    /**
+     * method for remove comments
+     * @param $id
+     */
+    public function actionDelete($id)
+    {
+        $this->commentService->delete($id);
+    }
+
+    /**
+     * method for save comments
+     */
     public function actionSave()
     {
-        $request = \Yii::$app->getRequest();
-
-        if ($request->bodyParams['CommentForm']['comment_id'] && $request->bodyParams['CommentForm']['message']) {
-//            var_dump($request->bodyParams);
-            $comment = Comment::findOne($request->bodyParams['CommentForm']['comment_id']);
-            $comment->message = $request->bodyParams['CommentForm']['message'];
-            return $comment->save();
-        }
-
-        return false;
+        $this->commentService->saveChanges();
     }
 
 }

@@ -13,6 +13,7 @@ use yii\base\Model;
 
 class ArticleForm extends Model
 {
+    public $user_id;
     public $author_id;
     public $author_name;
     public $author_avatar;
@@ -24,6 +25,7 @@ class ArticleForm extends Model
     public function rules()
     {
         return [
+            ['user_id','integer'],
             ['author_id','integer'],
             ['author_name', 'string'],
             ['author_avatar', 'string'],

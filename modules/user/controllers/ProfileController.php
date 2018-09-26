@@ -10,16 +10,33 @@ namespace app\modules\user\controllers;
 
 
 use app\models\Article;
-use app\models\Comment;
 use app\models\User;
 use app\modules\user\models\ArticleForm;
 use app\modules\user\models\CommentForm;
-use Yii;
+use app\modules\user\Module;
+use app\modules\user\services\ArticleService;
+use app\modules\user\services\CommentService;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
 class ProfileController extends Controller
 {
+    protected $articleService;
+    protected $commentService;
+
+    public function __construct(
+        $id,
+        Module $module,
+        ArticleService $articleService,
+        CommentService $commentService,
+        array $config = [])
+    {
+        parent::__construct($id, $module, $config);
+
+        $this->articleService = $articleService;
+        $this->commentService = $commentService;
+    }
+
     public function behaviors()
     {
         return [
@@ -43,32 +60,16 @@ class ProfileController extends Controller
 
         $articles = Article::find()->where(['user_id' => $id])->orderBy(['id' => SORT_DESC])->limit($lim)->all();
 
-        $model = new ArticleForm();
-        if($model->load(\Yii::$app->request->post()) && $model->validate()){
-            $article = new Article();
-            $article->user_id = $id;
-            $article->author_id = $model->author_id;
-            $article->author_name = $model->author_name;
-            $article->author_avatar = $model->author_avatar;
-            $article->message = $model->message;
-            if ($article->save()){
-                return $this->redirect('/user/profile?id=' . $id . '&lim=' . $lim);
-            }
+        $articleModel = new ArticleForm();
+        if ($this->articleService->saveNew($articleModel)){
+            return $this->redirect('/user/profile?id=' . $id . '&lim=' . $lim);
         }
 
-        $model2 = new CommentForm();
-        if($model2->load(\Yii::$app->request->post()) && $model2->validate()){
-            $comment = new Comment();
-            $comment->parent_id = $model2->parent_id;
-            $comment->author_id = $model2->author_id;
-            $comment->author_name = $model2->author_name;
-            $comment->author_avatar = $model2->author_avatar;
-            $comment->message = $model2->message;
-            if ($comment->save()){
-                return $this->redirect('/user/profile?id=' . $id . '&lim=' . $lim);
-            }
+        $commentModel = new CommentForm();
+        if ($this->commentService->saveNew($commentModel)){
+            return $this->redirect('/user/profile?id=' . $id . '&lim=' . $lim);
         }
 
-        return $this->render('index', ['user' => $user,'articles' => $articles, 'model' => $model,'model2' => $model2]);
+        return $this->render('index', ['user' => $user,'articles' => $articles, 'model' => $articleModel,'model2' => $commentModel]);
     }
 }

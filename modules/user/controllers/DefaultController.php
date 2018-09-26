@@ -3,8 +3,6 @@
 namespace app\modules\user\controllers;
 
 use app\models\User;
-use app\modules\user\models\SettingsForm;
-use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 

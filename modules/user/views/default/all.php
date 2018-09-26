@@ -1,5 +1,5 @@
 
-<div class="container" style="display: flex; justify-content: space-around">
+<div class="container" style="display: flex; justify-content: space-around; flex-wrap: wrap;">
 
 <?php foreach ($users as $user) : ?>
     <div style="margin-bottom: 20px; border: 1px solid gainsboro; text-align: center; border-radius: 3%; padding: 10px;" class="user">

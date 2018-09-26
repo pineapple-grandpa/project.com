@@ -12,6 +12,8 @@ namespace app\modules\admin\controllers;
 use app\models\User;
 use app\modules\admin\models\CreateForm;
 use app\modules\admin\models\UpdateForm;
+use app\modules\admin\Module;
+use app\services\UserService;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -19,6 +21,20 @@ use yii\web\Controller;
 
 class UsersController extends Controller
 {
+    protected $userService;
+
+    public function __construct(
+        $id,
+        Module $module,
+        UserService $userService,
+        array $config = []
+    )
+    {
+        parent::__construct($id, $module, $config);
+
+        $this->userService = $userService;
+    }
+
     public function behaviors()
     {
         return [
@@ -26,7 +42,7 @@ class UsersController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index','update','delete','create'],
+                        'actions' => ['index', 'update', 'delete', 'create'],
                         'allow' => true,
                         'roles' => ['admin'],
                     ],
@@ -50,61 +66,49 @@ class UsersController extends Controller
     {
         $user = User::findOne($id);
         $model = new UpdateForm();
+        $options = ['role'];
 
-        if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
-            $user->name = $model->name;
-            $user->email = $model->email;
-            $user->gender = $model->gender;
-            $user->role = $model->role;
-            $user->birth_date = $model->birth_date;
-
-            $auth = Yii::$app->authManager;
-            $auth->revokeAll($id);
-            $role = $auth->getRole($model->role);
-            $auth->assign($role,$id);
-
-            if ($user->save()) {
-                Yii::$app->session->setFlash('success', "User updated successfully.");
-                return $this->redirect('/admin/users');
-            }
+        if (
+            $this->userService->saveChanges($model, $user, $options) &&
+            $this->userService->revokeRoles($id) &&
+            $this->userService->setRole($user->role, $user->id)
+        ) {
+            Yii::$app->session->setFlash('success', "User updated successfully!");
+            return $this->redirect('/admin/users');
         }
+
         return $this->render('update', ['user' => $user, 'model' => $model]);
     }
 
     public function actionDelete($id)
     {
-        $user = User::findOne($id);
-        if ($user->delete()) {
-            $auth = Yii::$app->authManager;
-            $auth->revokeAll($id);
+        if ($this->userService->delete($id) && $this->userService->revokeRoles($id)) {
             Yii::$app->session->setFlash('success', "User deleted successfully.");
             return $this->redirect('/admin/users');
         }
+
+        Yii::$app->session->setFlash('error', "Failed to delete!");
+        return $this->redirect('/admin/users');
     }
 
+    /**
+     * @return string|\yii\web\Response
+     * @throws \yii\base\Exception
+     */
     public function actionCreate()
     {
         $model = new CreateForm();
-        if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
-            $user = new User();
-            $user->name = $model->name;
-            $user->login = $model->login;
-            $user->email = $model->email;
-            $user->password = \Yii::$app->security->generatePasswordHash($model->password);
-            $user->birth_date = $model->birth_date;
-            $user->gender = $model->gender;
-            $user->role = $model->role;
-            if ($user->save()){
-                $auth = Yii::$app->authManager;
-                $role = $auth->getRole($model->role);
-                $auth->assign($role, $user->getId());
-                Yii::$app->session->setFlash('success', "User created successfully.");
-                return $this->redirect('/admin/users');
-            }
+        $user = new User();
+        $options = ['role'];
 
+        if ($this->userService->saveNew($model, $user, $options) &&
+            $this->userService->setRole($user->role, $user->id)
+        ) {
+            Yii::$app->session->setFlash('success', "User created successfully.");
+            return $this->redirect('/admin/users');
         }
 
-        return $this->render('create',['model'=>$model]);
+        return $this->render('create', ['model' => $model]);
     }
 
 }

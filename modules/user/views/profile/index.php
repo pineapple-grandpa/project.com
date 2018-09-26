@@ -71,6 +71,7 @@ $isOwner = ($user->getId() === $guest->getId());
 
                 <div>
                     <?= $form->field($model, 'message')->textInput()->label(false); ?>
+                    <?= $form->field($model, 'user_id')->hiddenInput(['value' => $user->id])->label(false) ?>
                     <?= $form->field($model, 'author_id')->hiddenInput(['value' => $guest->getId()])->label(false) ?>
                     <?= $form->field($model, 'author_name')->hiddenInput(['value' => $guest->name])->label(false) ?>
                     <?= $form->field($model, 'author_avatar')->hiddenInput(['value' => $guest->avatar])->label(false) ?>
@@ -260,6 +261,8 @@ $isOwner = ($user->getId() === $guest->getId());
 
 
 
+<script>
 
+</script>
 
 

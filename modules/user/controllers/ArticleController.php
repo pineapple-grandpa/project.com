@@ -8,48 +8,57 @@
 
 namespace app\modules\user\controllers;
 
-
-use app\models\Article;
-use app\modules\user\models\ArticleForm;
-use app\modules\user\models\EditArticleForm;
-use yii\bootstrap\ActiveForm;
+use app\modules\user\Module;
+use app\modules\user\services\ArticleService;
 use yii\web\Controller;
-use yii\web\Response;
 
+
+/**
+ * Class ArticleController
+ *
+ * @package app\modules\user\controllers
+ */
 class ArticleController extends Controller
 {
+    /**
+     * @var ArticleService
+     */
+    public $articleService;
+
+    /**
+     * ArticleController constructor.
+     * @param $id
+     * @param Module $module
+     * @param ArticleService $articleService
+     * @param array $config
+     */
+    public function __construct(
+        $id,
+        Module $module,
+        ArticleService $articleService,
+        array $config = []
+    )
+    {
+        parent::__construct($id, $module, $config);
+
+        $this->articleService = $articleService;
+    }
+
+    /**
+     * method for remove articles
+     * @param $id
+     */
     public function actionDelete($id)
     {
-        $article = Article::findOne($id);
-
-        if ($article->delete()) {
-            return true;
-        }
-        return false;
+        $this->articleService->delete($id);
     }
 
+    /**
+     * method for save articles
+     */
     public function actionSave()
     {
-        $request = \Yii::$app->getRequest();
-
-        if ($request->bodyParams['ArticleForm']['article_id'] && $request->bodyParams['ArticleForm']['message']) {
-            $article = Article::findOne($request->bodyParams['ArticleForm']['article_id']);
-            $article->message = $request->bodyParams['ArticleForm']['message'];
-            return $article->save();
-        }
-
-        return false;
+        $this->articleService->saveChanges();
     }
 
-    public function actionValidate()
-    {
-        $model = new EditArticleForm();
-        $request = \Yii::$app->getRequest();
-        if ($request->isPost && $model->load($request->post())) {
-            \Yii::$app->response->format = Response::FORMAT_JSON;
-            return ActiveForm::validate($model);
-        }
-
-        return false;
-    }
 }

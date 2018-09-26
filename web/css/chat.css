@@ -1,0 +1,49 @@
+.chats {
+    display: flex;
+    justify-content: space-around;
+}
+
+.chats a {
+    text-decoration: none;
+}
+
+.chats a div {
+    border: 1px solid gainsboro;
+    border-radius: 5%;
+    padding: 5px;
+    text-align: center;
+}
+
+.chats a div img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.input-new-message-form {
+    width: 800px;
+    margin-bottom: 15px;
+}
+
+.messages-block {
+    width: 800px;
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid gainsboro;
+    padding: 10px;
+}
+
+.message {
+    padding: 10px;
+    margin-bottom: 10px;
+    width: 600px;
+}
+
+.message.companion {
+    background-color: gainsboro;
+}
+
+.message.user {
+    background-color: #5bc0de;
+    margin-left: 200px;
+}

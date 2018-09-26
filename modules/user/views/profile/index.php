@@ -50,6 +50,10 @@ $isOwner = ($user->getId() === $guest->getId());
             <div>
                 <a class="btn btn-success" href="/user/settings">Settings</a>
             </div>
+            <div>
+                <a class="btn btn-success" href="/user/chat/all">Chats</a>
+            </div>
+
         <?php else : ?>
             <div>
                 <a href="" class="btn btn-success">Send message</a><br>

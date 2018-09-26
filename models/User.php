@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\modules\user\models\Chat;
 use app\modules\user\models\UserSettings;
 use phpDocumentor\Reflection\Types\Boolean;
 use Yii;

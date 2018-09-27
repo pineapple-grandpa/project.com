@@ -11,6 +11,7 @@ namespace app\modules\user\controllers;
 
 use app\models\User;
 use app\modules\user\models\Chat;
+use app\modules\user\models\EditMessageForm;
 use app\modules\user\models\MessageForm;
 use app\modules\user\Module;
 use app\modules\user\services\ChatService;
@@ -60,6 +61,8 @@ class ChatController extends Controller
         $user = User::findOne(\Yii::$app->user->getId());
         $model = new MessageForm();
 
+        $editMessageModel = new EditMessageForm();
+
         $companionId = ($chat->first_user_id == $user->id) ? $chat->second_user_id : $chat->first_user_id;
         $companion = User::findOne($companionId);
 
@@ -67,7 +70,7 @@ class ChatController extends Controller
             $this->redirect('/user/chat/dialog?id=' . $id);
         }
 
-        return $this->render('dialog', ['chat' => $chat, 'user' => $user, 'model' => $model, 'companion' => $companion]);
+        return $this->render('dialog', ['chat' => $chat, 'user' => $user, 'model' => $model, 'companion' => $companion,'editMessageModel' => $editMessageModel]);
     }
 
     public function actionCreate($id)
@@ -93,4 +96,8 @@ class ChatController extends Controller
         }
     }
 
+    public function actionEdit()
+    {
+        return $this->messageService->saveChanges();
+    }
 }

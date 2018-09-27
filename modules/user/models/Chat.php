@@ -15,7 +15,7 @@ class Chat extends ActiveRecord
 
     public function getMessages()
     {
-        return $this->hasMany(Message::className(), ['chat_id' => 'id'])->orderBy(['created_at' => SORT_DESC]);
+        return $this->hasMany(Message::className(), ['chat_id' => 'id'])->orderBy(['id' => SORT_DESC]);
     }
 
 }

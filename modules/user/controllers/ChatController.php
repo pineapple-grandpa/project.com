@@ -17,6 +17,7 @@ use app\modules\user\Module;
 use app\modules\user\services\ChatService;
 use app\modules\user\services\MessageService;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 
 class ChatController extends Controller
@@ -45,6 +46,22 @@ class ChatController extends Controller
 
         $this->messageService = $messageService;
         $this->chatService = $chatService;
+    }
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['dialog','all','create','edit'],
+                        'allow' => true,
+                        'roles' => ['user'],
+                    ],
+                ],
+            ],
+        ];
     }
 
     public function actionAll()

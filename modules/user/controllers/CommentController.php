@@ -10,6 +10,7 @@ namespace app\modules\user\controllers;
 
 use app\modules\user\Module;
 use app\modules\user\services\CommentService;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 
 class CommentController extends Controller
@@ -35,6 +36,22 @@ class CommentController extends Controller
         parent::__construct($id, $module, $config);
 
         $this->commentService = $commentService;
+    }
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['delete','save'],
+                        'allow' => true,
+                        'roles' => ['user'],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**

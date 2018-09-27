@@ -15,6 +15,73 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         return $this->hasMany(UserSettings::className(), ['user_id' => 'id']);
     }
 
+    /**
+     * @return array
+     */
+    public function getFriends()
+    {
+        $friendsRows = Friend::find()->where(['user_id' => $this->getId()])->all();
+        $friends = [];
+
+        foreach ($friendsRows as $friendRow) {
+            $friends[] = User::findOne($friendRow->friend_id);
+        }
+
+        return $friends;
+    }
+
+    public function isBro($id)
+    {
+        $friends = $this->getFriends();
+        $currentUser = User::findOne($id);
+
+        return in_array($currentUser,$friends);
+    }
+
+    public function getInvitesTo()
+    {
+        $invitesRows = Invite::find()->where(['from_user' => $this->getId()])->all();
+        $users = [];
+
+        foreach ($invitesRows as $inviteRow){
+            $users[] = User::findOne($inviteRow->to_user);
+        }
+
+        return $users;
+    }
+
+    public function getInvitesFrom()
+    {
+        $invitesRows = Invite::find()->where(['to_user' => $this->getId()])->all();
+        $users = [];
+
+        foreach ($invitesRows as $inviteRow){
+            $users[] = User::findOne($inviteRow->from_user);
+        }
+
+        return $users;
+    }
+
+    public function isInvited($id)
+    {
+        $invitesTo = $this->getInvitesTo();
+        $currentUser = User::findOne($id);
+
+        return in_array($currentUser,$invitesTo);
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     */
+    public function isFriend($id)
+    {
+        $friends = $this->getFriends();
+        $currentUser = User::findOne($id);
+
+        return in_array($currentUser,$friends);
+    }
+
     public function getOption($optionName) // получаю определенную настройку по имени
     {
         $options = $this->settings;

@@ -1,11 +1,12 @@
 <?php
 
 use app\assets\ProfileAsset;
+use app\models\User;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
 ProfileAsset::register($this);
-$guest = Yii::$app->user->identity;
+$guest = User::findOne(Yii::$app->user->getId());
 $isOwner = ($user->getId() === $guest->getId());
 ?>
 
@@ -56,10 +57,28 @@ $isOwner = ($user->getId() === $guest->getId());
 
         <?php else : ?>
             <div>
-                <a href="/user/chat/create?id=<?= $user->id?>" class="btn btn-success">Send message</a><br>
+                <a href="/user/chat/create?id=<?= $user->id ?>" class="btn btn-success">Send message</a><br>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!$isOwner && !$guest->isInvited($user->id) && !$guest->isBro($user->id)): ?>
+            <div>
                 <a href="" class="btn btn-success">Send invite</a><br>
             </div>
         <?php endif; ?>
+
+        <?php if (!$isOwner && $guest->isInvited($user->id)): ?>
+            <div>
+                 <p>Invite sended</p>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!$isOwner && $guest->isBro($user->id)): ?>
+            <div>
+                <p> Already in friends</p>
+            </div>
+        <?php endif; ?>
+
     </div>
 
 
@@ -185,7 +204,7 @@ $isOwner = ($user->getId() === $guest->getId());
                     <div class="wall-article-comment">
 
                         <div class="wall-article-comment-author">
-                            <a href="/user/profile?id=<?= $comment->author_id ?>">
+                            <a href="/user/profile?id=<?= $comment->author_id ?>&">
                                 <img src="/img/avatars/<?= $comment->author_avatar ?>"></a> <br>
                             <p><?= $comment->author_name ?></p>
                             <p><?= $comment->created_at ?></p>
@@ -258,7 +277,6 @@ $isOwner = ($user->getId() === $guest->getId());
 </div>
 
 </body>
-
 
 
 <script>

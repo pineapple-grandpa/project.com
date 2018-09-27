@@ -10,6 +10,7 @@ namespace app\modules\user\controllers;
 
 use app\modules\user\Module;
 use app\modules\user\services\ArticleService;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 
 
@@ -42,6 +43,22 @@ class ArticleController extends Controller
         parent::__construct($id, $module, $config);
 
         $this->articleService = $articleService;
+    }
+
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['delete','save'],
+                        'allow' => true,
+                        'roles' => ['user'],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**

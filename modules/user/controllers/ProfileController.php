@@ -13,6 +13,7 @@ use app\models\Article;
 use app\models\User;
 use app\modules\user\models\ArticleForm;
 use app\modules\user\models\CommentForm;
+use app\modules\user\models\InviteForm;
 use app\modules\user\Module;
 use app\modules\user\services\ArticleService;
 use app\modules\user\services\CommentService;
@@ -58,6 +59,8 @@ class ProfileController extends Controller
     {
         $user = User::findIdentity($id);
 
+        $inviteModel = new InviteForm();
+
         $articles = Article::find()->where(['user_id' => $id])->orderBy(['id' => SORT_DESC])->limit($lim)->all();
 
         $articleModel = new ArticleForm();
@@ -70,6 +73,6 @@ class ProfileController extends Controller
             return $this->redirect('/user/profile?id=' . $id . '&lim=' . $lim);
         }
 
-        return $this->render('index', ['user' => $user,'articles' => $articles, 'model' => $articleModel,'model2' => $commentModel]);
+        return $this->render('index', ['user' => $user,'articles' => $articles, 'model' => $articleModel,'model2' => $commentModel,'inviteModel' => $inviteModel]);
     }
 }

@@ -3,6 +3,7 @@
 namespace app\modules\user\controllers;
 
 use app\models\User;
+use app\modules\user\models\InviteForm;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
@@ -31,6 +32,8 @@ class DefaultController extends Controller
     public function actionAll()
     {
         $users = User::find()->all();
-        return $this->render('all',['users' => $users]);
+        $inviteModel = new InviteForm();
+
+        return $this->render('all',['users' => $users,'inviteModel' => $inviteModel]);
     }
 }

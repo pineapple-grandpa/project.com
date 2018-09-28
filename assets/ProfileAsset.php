@@ -19,6 +19,7 @@ class ProfileAsset extends AssetBundle
     ];
     public $js = [
         'js/profile.js',
+        'js/friends.js',
         'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'
     ];
 

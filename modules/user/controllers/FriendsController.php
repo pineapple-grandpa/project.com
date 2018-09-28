@@ -10,7 +10,9 @@ namespace app\modules\user\controllers;
 
 
 use app\models\User;
+use app\modules\user\models\InviteForm;
 use app\modules\user\Module;
+use app\modules\user\services\FriendService;
 use app\modules\user\services\InviteService;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -18,17 +20,20 @@ use yii\web\Controller;
 class FriendsController extends Controller
 {
     protected $inviteService;
+    protected $friendService;
 
     public function __construct(
         $id,
         Module $module,
         InviteService $inviteService,
+        FriendService $friendService,
         array $config = []
     )
     {
         parent::__construct($id, $module, $config);
 
         $this->inviteService = $inviteService;
+        $this->friendService = $friendService;
     }
 
     public function behaviors()
@@ -38,7 +43,7 @@ class FriendsController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['all',],
+                        'actions' => ['all','invite','delete'],
                         'allow' => true,
                         'roles' => ['user'],
                     ],
@@ -49,21 +54,34 @@ class FriendsController extends Controller
 
     public function actionAll()
     {
-        $user = User::findOne(\Yii::$app->user->getId());
-        $friends = $user->getFriends();
+        $owner = User::findOne(\Yii::$app->user->getId());
+        $friends = $owner->getFriends();
+        $invitesTo = $owner->getInvitesTo();
+        $invitesFrom = $owner->getInvitesFrom();
+        $inviteModel = new InviteForm();
 
-        return $this->render('index', ['user' => $user, 'friends' => $friends]);
+        return $this->render('index', ['owner' => $owner, 'friends' => $friends,'invitesTo' => $invitesTo,'invitesFrom' => $invitesFrom,'inviteModel' => $inviteModel]);
     }
 
     public function actionInvite()
     {
-        return $this->inviteService->saveNew();
+        if ($this->inviteService->isAlreadyHaveInviteFromThisUser()){
+            $invite = $this->inviteService->getInviteFromThisUser();
+            $this->inviteService->inviteDelete($invite->id);
+
+            return $this->friendService->addFriend();
+        } else {
+
+            return $this->inviteService->saveNew();
+        }
     }
 
-    public function actionAdd()
+    public function actionDelete($user,$friend)
     {
+        if ($this->friendService->deleteFriend($user,$friend)){
+           return $this->inviteService->newInviteByIds($user,$friend);
+        }
 
+        return false;
     }
-
-
 }

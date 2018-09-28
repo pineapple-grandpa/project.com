@@ -54,6 +54,9 @@ $isOwner = ($user->getId() === $guest->getId());
             <div>
                 <a class="btn btn-success" href="/user/chat/all">Chats</a>
             </div>
+            <div>
+                <a class="btn btn-success" href="/user/friends/all">Friends</a>
+            </div>
 
         <?php else : ?>
             <div>
@@ -62,20 +65,34 @@ $isOwner = ($user->getId() === $guest->getId());
         <?php endif; ?>
 
         <?php if (!$isOwner && !$guest->isInvited($user->id) && !$guest->isBro($user->id)): ?>
+            <?php $form = ActiveForm::begin([
+                'id' => 'send_invite_form_' . $user->id,
+                'method' => 'post',
+                'action' => '/user/friends/invite'
+            ]) ?>
+
+            <?= $form->field($inviteModel, 'from_user')->hiddenInput(['value' => $guest->id])->label(false) ?>
+            <?= $form->field($inviteModel, 'to_user')->hiddenInput(['value' => $user->id])->label(false) ?>
+
             <div>
-                <a href="" class="btn btn-success">Send invite</a><br>
+                <?= Html::submitButton('Send invite', ['class' => 'btn btn-success','onclick' => 'send_invite(' . $user->id . ')']) ?>
             </div>
+
+            <?php ActiveForm::end() ?>
         <?php endif; ?>
 
         <?php if (!$isOwner && $guest->isInvited($user->id)): ?>
             <div>
-                 <p>Invite sended</p>
+                <button onclick="delete_invite(<?= $user->id ?>,<?= $guest->id ?>)" class="btn btn-default">Cancel invite
+                </button>
             </div>
         <?php endif; ?>
 
         <?php if (!$isOwner && $guest->isBro($user->id)): ?>
             <div>
-                <p> Already in friends</p>
+                <button onclick="delete_friend(<?= $guest->id ?>,<?= $user->id ?>)" class="btn btn-default">
+                    delete from friends
+                </button>
             </div>
         <?php endif; ?>
 
@@ -278,9 +295,5 @@ $isOwner = ($user->getId() === $guest->getId());
 
 </body>
 
-
-<script>
-
-</script>
 
 

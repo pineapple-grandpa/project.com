@@ -100,7 +100,6 @@ $isOwner = ($user->getId() === $guest->getId());
 
 
     <div class="user-wall">
-        <?php if ($user->isOption('access_to_guests_to_write_on_wall') || (!$user->isOption('access_to_guests_to_write_on_wall') && $isOwner)) : ?>
 
             <div class="input-new-article-form">
                 <?php $form = ActiveForm::begin() ?>
@@ -120,8 +119,6 @@ $isOwner = ($user->getId() === $guest->getId());
 
                 <?php ActiveForm::end() ?>
             </div>
-
-        <?php endif; ?>
 
         <?php \yii\widgets\Pjax::begin() ?>
 
@@ -155,14 +152,14 @@ $isOwner = ($user->getId() === $guest->getId());
                                 </div>
                             <?php endif; ?>
 
-                            <?php if ($user->isOption('access_to_guests_to_write_on_wall') || (!$user->isOption('access_to_guests_to_write_on_wall') && $isOwner)) : ?>
+<!--                            --><?php //if ($user->isOption('access_to_guests_to_write_on_wall') || (!$user->isOption('access_to_guests_to_write_on_wall') && $isOwner)) : ?>
                                 <div>
                                     <button onclick="input_text_visibility(<?= $article->id ?>);"
                                             class="btn btn-default">
                                         reply
                                     </button>
                                 </div>
-                            <?php endif; ?>
+<!--                            --><?php //endif; ?>
                             <?php if ($article->author_id == $guest->id || $guest->isAdmin()) : ?>
                                 <div>
                                     <button onclick="edit_text_visibility(<?= $article->id ?>)"

@@ -35,19 +35,6 @@ $this->title = 'Update user: ' . $user->name;
         <?php $genderItems = ['male'=>'male','female'=>'female'];
         echo $form->field($model,'gender')->dropDownList($genderItems,['value'=>$user->gender]) ?>
         <?= $form->field($model, 'birth_date')->textInput(['value' => $user->birth_date]) ?>
-
-        <h3>Options</h3>
-
-        <?php $list = ['0' => 'disabled', '1' => 'enabled'];
-        $option = $user->getOption('access_to_guests_to_write_on_wall');
-        echo $form->field($model, 'option_value')->dropDownList($list, ['value' => $option->value])->label('Access to wall ') ?>
-
-        <?= $form->field($model, 'option_id')->hiddenInput(['value' => $option->id])->label(false) ?>
-
-        <div class="col-lg-offset-1 col-lg-11">
-            <a class="btn btn-success" href="/admin/users">Back</a>
-            <?= Html::submitButton('Update', ['class' => 'btn btn-success', 'name' => 'login-button']) ?>
-        </div>
     </div>
 
 <?php ActiveForm::end() ?>

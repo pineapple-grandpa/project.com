@@ -2,8 +2,8 @@
 
 namespace app\modules\user\controllers;
 
-use app\modules\user\models\SettingsForm;
-use Yii;
+use app\models\User;
+use app\modules\user\models\InviteForm;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 
@@ -20,7 +20,7 @@ class DefaultController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index'],
+                        'actions' => ['index','all'],
                         'allow' => true,
                         'roles' => ['user'],
                     ],
@@ -29,13 +29,11 @@ class DefaultController extends Controller
         ];
     }
 
-    /**
-     * Renders the index view for the module
-     * @return string
-     */
-    public function actionIndex()
+    public function actionAll()
     {
-        $user = \Yii::$app->user->identity;
-        return $this->render('index', ['user' => $user]);
+        $users = User::find()->all();
+        $inviteModel = new InviteForm();
+
+        return $this->render('all',['users' => $users,'inviteModel' => $inviteModel]);
     }
 }

@@ -1,0 +1,133 @@
+.main-content {
+    display: flex;
+}
+
+.user-description {
+    text-align: center;
+    width: 300px;
+}
+
+.user-description p {
+    font-weight: bold;
+}
+
+.user-avatar {
+    margin-bottom: 15px;
+}
+
+.user-avatar img {
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+}
+
+.user-avatar-settings {
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+
+.user-data {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.user-wall {
+    max-width: 700px;
+}
+
+.input-new-article-form {
+    width: 700px;
+}
+
+.wall-article-block {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.wall-article-description {
+    border: 1px solid gainsboro;
+    display: flex;
+    margin-bottom: 5px;
+    margin-top: 20px;
+    padding: 5px;
+    width: 700px;
+}
+
+.wall-article-author {
+    text-align: center;
+    border-right: 1px solid gainsboro;
+    padding-right: 5px;
+}
+
+.wall-article-content {
+    display: flex;
+    width: 600px;
+    justify-content: space-between;
+}
+
+.wall-article-content-message {
+    align-self: center;
+    padding-left: 5px;
+}
+
+.wall-article-content-buttons {
+    align-self: flex-end;
+    justify-content: space-between;
+    display: flex;
+}
+
+.input-comment-form {
+    width: 700px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.edit-article-form {
+    width: 700px;
+    display: none;
+    margin-bottom: 10px;
+}
+
+.wall-article-comment {
+    border: 1px solid gainsboro;
+    display: flex;
+    margin-bottom: 5px;
+    margin-top: 10px;
+    padding: 5px;
+    width: 560px;
+}
+
+.wall-article-comment-author {
+    text-align: center;
+    border-right: 1px solid gainsboro;
+    padding-right: 5px;
+}
+
+.wall-article-comment-author img {
+    width: 50px; height: 50px; border-radius: 50%;
+}
+
+.wall-article-comment-content {
+    display: flex;
+    justify-content: space-between;
+    width: 600px;
+}
+
+.wall-article-comment-content-message {
+    align-self: center;
+    padding-left: 5px;
+}
+
+.wall-article-comment-content-buttons {
+    align-self: flex-end;
+    justify-content: space-between;
+    display: flex;
+}
+
+.edit-comment-form {
+    width: 560px;
+    margin-bottom: 10px;
+    display: none;
+}

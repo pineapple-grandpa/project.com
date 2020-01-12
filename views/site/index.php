@@ -8,7 +8,7 @@ $this->title = 'Socialnetwork';
 
     <h1>Эй, Привет!</h1>
    <?php if (!Yii::$app->user->isGuest): ?>
-    <img src="/img/image.jpg">
+    <a href="/user/default/all" class="btn btn-success">All users</a>
    <?php endif; ?>
 
 </div>

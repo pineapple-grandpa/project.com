@@ -11,11 +11,27 @@ namespace app\controllers;
 
 use app\models\RegisterForm;
 use app\models\User;
+use app\services\UserService;
 use Yii;
 use yii\web\Controller;
+use yii\base\Module;
 
 class RegisterController extends Controller
 {
+    protected $userService;
+
+    public function __construct(
+        $id,
+        Module $module,
+        UserService $userService,
+        array $config = []
+    )
+    {
+        parent::__construct($id, $module, $config);
+
+        $this->userService = $userService;
+    }
+
     /**
      * show register form action
      *
@@ -40,21 +56,16 @@ class RegisterController extends Controller
     public function actionRegister()
     {
         $model = new RegisterForm();
-        if($model->load(\Yii::$app->request->post()) && $model->validate()){
-            $user = new User();
-            $user->name = $model->name;
-            $user->login = $model->login;
-            $user->email = $model->email;
-            $user->password = \Yii::$app->security->generatePasswordHash($model->password);
-            $user->birth_date = $model->birth_date;
-            $user->gender = $model->gender;
-            if ($user->save()){
-                $auth = Yii::$app->authManager;
-                $role = $auth->getRole('user');
-                $auth->assign($role, $user->getId());
-                return $this->goHome();
-            }
+        $user = new User();
+
+        if ($this->userService->saveNew($model,$user)) {
+            $this->userService->setRole('user',$user->getId());
+
+            return $this->redirect('/login');
         }
+
+        return $this->redirect('/register/form');
+
     }
 
 }

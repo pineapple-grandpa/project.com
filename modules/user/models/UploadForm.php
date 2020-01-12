@@ -8,7 +8,6 @@
 
 namespace app\modules\user\models;
 
-use Yii;
 use yii\base\Model;
 use yii\web\UploadedFile;
 
@@ -38,8 +37,8 @@ class UploadForm extends Model
     public function upload()
     {
         if ($this->validate()) {
-            $this->avatar->saveAs('img/avatars/' . $this->userId . $this->avatar->baseName . '.' . $this->avatar->extension);
-            $this->avatarName = $this->userId . $this->avatar;
+            $this->avatarName = time() . '.' . $this->avatar->extension;
+            $this->avatar->saveAs('img/avatars/' . $this->avatarName);
             return true;
         }
         return false;

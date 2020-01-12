@@ -18,6 +18,9 @@ class UpdateForm extends Model
     public $gender;
     public $role;
 
+    public $option_id;
+    public $option_value;
+
     /**
      * @return array the validation rules.
      */
@@ -30,7 +33,9 @@ class UpdateForm extends Model
             ['gender', 'validateGender'],
             ['birth_date', 'string'],
             ['role', 'string'],
-            ['role','validateRole']
+            ['role','validateRole'],
+            ['option_id', 'integer'],
+            ['option_value', 'integer'],
         ];
     }
 
